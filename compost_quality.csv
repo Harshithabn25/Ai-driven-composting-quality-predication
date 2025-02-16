@@ -1,0 +1,11 @@
+Temperature,Humidity,Microbial_Activity,Compost_Quality
+30,60,7,Good
+25,55,6,Bad
+40,70,8,Good
+50,80,9,Good
+20,50,5,Bad
+35,65,7,Good
+45,75,9,Good
+27,58,6,Bad
+33,62,7,Good
+48,78,8,Good
