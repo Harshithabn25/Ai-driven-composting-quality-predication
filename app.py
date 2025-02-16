@@ -38,4 +38,6 @@ def predict():
 
 # Run Flask app
 if __name__ == "__main__":  # Use double quotes
-    app.run(debug=True)
+    if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8501)  # Streamlit uses port 8501
+
