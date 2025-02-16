@@ -1,44 +1,32 @@
-from flask import Flask, request, jsonify, render_template
+import streamlit as st
 import pickle
 import numpy as np
 
 # Load trained model and scaler
-model = pickle.load(open("model.pkl", "rb"))  # File name should be in quotes
+model = pickle.load(open("model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
 
-# Initialize Flask app
-app = Flask(__name__)
+# Streamlit UI
+st.title("Composting Quality Predictor")
 
-# Home route - renders a simple HTML form
-@app.route("/")
-def home():
-    return render_template("index.html")  # File name should be in quotes
+# User inputs
+temperature = st.number_input("Enter Temperature (°C)", min_value=-10.0, max_value=100.0, step=0.1)
+humidity = st.number_input("Enter Humidity (%)", min_value=0.0, max_value=100.0, step=0.1)
+microbial_activity = st.number_input("Enter Microbial Activity Level", min_value=0.0, max_value=100.0, step=0.1)
 
-# Prediction route
-@app.route("/predict", methods=["POST"])
-def predict():
+# Prediction button
+if st.button("Predict Compost Quality"):
     try:
-        # Get data from form
-        temp = float(request.form["temperature"])  
-        humidity = float(request.form["humidity"])  
-        microbes = float(request.form["microbial_activity"])  
-
         # Prepare input for model
-        input_data = np.array([[temp, humidity, microbes]])
+        input_data = np.array([[temperature, humidity, microbial_activity]])
         input_scaled = scaler.transform(input_data)
 
         # Get prediction
         prediction = model.predict(input_scaled)[0]
-        result = "Good" if prediction == 1 else "Bad"  # Strings need quotes
+        result = "Good" if prediction == 1 else "Bad"
 
-        return render_template("index.html", prediction_text=f"Compost Quality: {result}")
+        # Show result
+        st.success(f"Compost Quality: {result}")
 
     except Exception as e:
-        return jsonify({"error": str(e)})
-
-# Run Flask app
-if __name__ == "__main__":  # Use double quotes
-    if __name__ == "__main__":
-        app.run(port=5000)  # Or any free port
-
-
+        st.error(f"Error: {str(e)}")
